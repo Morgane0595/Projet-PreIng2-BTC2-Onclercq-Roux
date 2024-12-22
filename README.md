@@ -1,5 +1,5 @@
 # Projet-PreIng2-BTC2-Onclercq-Roux
-But du projet:
+But du projet:(/n)
 Ce programme python a pour but de générer automatiquement des graphiques à partir d'un dossier local type "csv" en y effectuant des filtages de donnés.
 
 Utilisation du programme:
