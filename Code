@@ -1,1 +1,385 @@
-u
+import matplotlib.pyplot as plt
+import math
+
+#Save the source file in local folder
+# Source file path
+fichier_source = 'data_real.csv'
+
+# Destination folder
+dossier_destination = 'input/data_real.csv'
+
+# Open the source file in read mode
+f_source = open(fichier_source, 'r')    
+# Read the contents of the source file
+contenu = f_source.read()
+
+# Open the destination file in writing mode
+f_dest = open(dossier_destination, 'w')
+# Write the contents
+f_dest.write(contenu)
+
+def displayFile(filepath, outpath):
+    
+    # Open in read-only mode 
+    fd1 = open(filepath, 'r')
+    # Open in write-only mode 
+    fd2 = open(outpath, 'w')
+   
+    line = '   '
+
+    #Filter by colomns
+    # Read the first line
+    header=fd1.readline()
+    # Divide the first line in column
+    headerList=header.split(';')
+    # Define the indices of the columns to extract
+    indices=[2,4,5,7,8]
+    # Extract the necessary column headers
+    extractHeaders=[headerList[i] for i in indices]
+    # Write the headers in the output file
+    fd2.write(';'.join(extractHeaders)+'\n')
+
+
+    # Retrieve all next lines
+    for line in fd1:
+        # Remove line breaks
+        line = line.replace('\n', '')
+        if not line:
+            continue
+        # Split line
+        valueList = line.split(';')
+        # Check if the line contains enough columns
+        if len(valueList) < max(indices) + 1 :
+            break
+
+        #Filter by lines   
+        sample_type = valueList[2]
+        if sample_type == "fecal":
+            # Remove ... columns
+            filterList = [valueList[i] for i in indices]    
+            # Join the columns back
+            result = ';'.join(filterList)
+            fd2.write(result + '\n')
+
+    # End of process
+    # Close file stream
+    fd1.close()
+ #Process the original file and save the new file in local folder
+displayFile('data_huge.csv', 'output/Fecal.csv')
+
+# Plot the graph
+#Initialization of colors
+color_map = {'placebo': 'orange', 'abx': 'purple'}
+
+#Initialization of the plot
+figure, axes = plt.subplots()
+
+#Add a title for the graph and axes
+axes.set_title('Fecal live bacteria')
+axes.set_xlabel('Washout day')
+axes.set_ylabel('log 10(live bacteria/wet g)')
+
+fd2 = open('output/Fecal.csv', 'r')
+# Skip header line
+header = fd2.readline()
+# Dictionary to store data by mouse ID
+data = {}  
+
+#Retreive all next lines
+for line in fd2:
+    # Remove line breaks
+    line = line.replace('\n','')
+    if not line:
+        continue
+    #Split line
+    valueList = line.split(';')
+    m_ID = valueList[1]                         # Indicate the index of the column "Mouse ID"
+    treatment = valueList[2].lower()            # Indicate the index of the column "Treatment type"
+    day = int(valueList[3])                     # Indicate the index of the column "Washout day"
+    bacteria = math.log(float(valueList[4]))    # Indicate the index of the column for live bacteria and Log-transform bacteria count
+
+     # Store data for each mouse ID
+    if m_ID not in data:
+        data[m_ID] = {'days': [], 'bacteria': [], 'treatment': treatment}
+    data[m_ID]['days'].append(day)
+    data[m_ID]['bacteria'].append(bacteria)
+
+# Plot each mouse's data and add color according to treament
+for m_ID, mouse_data in data.items():
+    treatment_color = color_map.get(mouse_data['treatment'])
+    axes.plot(mouse_data['days'], mouse_data['bacteria'], color=treatment_color, label=f"{m_ID} ({mouse_data['treatment']})")
+
+# Add legend for treatments
+handles = [plt.Line2D([0], [0], color=color, lw=2, label=treatment.capitalize()) for treatment, color in color_map.items()]
+axes.legend(title = 'Treatment', loc = 'best', handles=handles)
+
+# Add grid and save the figure in local folder
+axes.grid(axis='y', linestyle='--', linewidth=0.5)
+figure.savefig('images/Fecal.png', dpi=300)
+plt.close(figure)
+
+#-----------------------------------------------------------------------------------------
+# ILEAL
+#-----------------------------------------------------------------------------------------
+
+def displayFile(filepath, outpath):
+    
+    # Open in read-only mode 
+    fd1 = open(filepath, 'r')
+    # Open in write-only mode 
+    fd3 = open(outpath, 'w')
+   
+    line = '   '
+
+    #Filter by columns
+    # Read the first line
+    header=fd1.readline()
+    # Divide the first line in column
+    headerList=header.split(';')
+    # Define the indices of the columns to extract
+    indices=[2,5,7,8]
+    # Extract the necessary column headers
+    extractHeaders=[headerList[i] for i in indices]
+    # Write the headers in the output file
+    fd3.write(';'.join(extractHeaders)+'\n')
+
+
+    # Retrieve all next lines
+    for line in fd1:
+        # Remove line breaks
+        line = line.replace('\n', '')
+        if not line:
+            continue
+        # Split line 
+        valueList = line.split(';')
+        # Check if the line contains enough columns
+        if len(valueList) < max(indices) + 1 :
+            break
+
+        #Filter by line (with two elements to verifies)    
+        sample_type = valueList[2]
+        experimental_day = valueList[7]
+        if sample_type == "ileal" :
+            if experimental_day == "0" or experimental_day == "1" :
+                # Remove ... columns
+                filterList = [valueList[i] for i in indices]    
+                # Join the columns back
+                result = ';'.join(filterList)
+                fd3.write(result + '\n')
+
+    # End of process
+    # Close file stream
+    fd1.close()
+ #Process the original file and save the new file in local folder
+displayFile('data_huge.csv', 'output/Ileal.csv')
+
+#lists to put the desired data on the desired axis
+x = []
+y = []
+y2= []
+
+
+# Fill data from file
+fd3 = open('output/Ileal.csv', 'r')
+line = fd3.readline()
+
+# Counter for the X axis
+count = 0
+while line != '':
+    line = fd3.readline()
+    # Remove line breaks
+    line = line.replace('\n','')
+    if line == '':
+        break 
+    # Split line
+    valueList = line.split(';')
+    # Take desired data for Y axis
+    bacteria = math.log10(float(valueList[3]))
+    treatment = valueList[1]
+    # Separation between ABX and Placebo
+    if 'ABX' in treatment :
+        valueList[1] = 1
+    elif 'placebo' in treatment :
+        valueList[1] = 2
+    # Put the desired data on the desired axis
+    x.append(count)
+    y.append(bacteria)
+    y2.append(valueList[1])
+    count = count + 1
+           
+
+fd3.close()
+
+grouped_data = {1: [], 2: []}  # 1 for ABX, 2 for placebo
+
+for i in range(len(y2)):
+    grouped_data[y2[i]].append(y[i])
+
+figure, axes = plt.subplots()
+
+# Add a title for the graph and axes
+axes.set_title('Ileal live bacteria')
+axes.set_ylabel('log 10(live bacteria/wet g)')
+axes.set_xlabel('Treatment')
+
+grp = axes.violinplot([grouped_data[1], grouped_data[2]])
+# Remove the X axis numbering
+axes.set_xticklabels([])
+
+# Initilization of colors
+colors = ['purple', 'orange']  
+
+for i in range(2):
+    grp['bodies'][i].set_facecolor(colors[i])
+
+# Add legend with colored square 
+# Purple square for ABX
+axes.scatter([], [], color='purple', label='ABX', marker='s', s=100)
+# Orange square for Placebo      
+axes.scatter([], [], color='orange', label='Placebo', marker='s', s=100)  
+
+# Add legend in the right bottom
+axes.legend(title="Treatment", loc='lower center')
+
+# Add horizontal lines
+axes.grid(axis='y', linestyle='--', linewidth=0.5)
+
+# Display points
+axes.scatter([1] * len(grouped_data[1]), grouped_data[1], color='purple', label='ABX', marker='o', s=15)      # Points for ABX
+axes.scatter([2] * len(grouped_data[2]), grouped_data[2], color='orange', label='Placebo', marker='o', s=15)  # Points for Placebo
+
+# Save figure in local folder
+figure.savefig('images/Ileal.png', dpi=300)
+
+
+#-----------------------------------------------------------------------------------------
+# CECAL
+#-----------------------------------------------------------------------------------------
+
+def displayFile(filepath, outpath):
+    
+    # Open in read-only mode 
+    fd1 = open(filepath, 'r')
+    # Open in write-only mode 
+    fd4 = open(outpath, 'w')
+   
+    line = '   '
+    
+    # Filter by colomns
+    # Read the first line
+    header=fd1.readline()
+    # Divide the first line in column
+    headerList=header.split(';')
+    # Define the indices of the columns to extract
+    indices=[2,5,7,8]
+    # Extract the necessary column headers
+    extractHeaders=[headerList[i] for i in indices]
+    # Write the headers in the output file
+    fd4.write(';'.join(extractHeaders)+'\n')
+
+
+    # Retrieve all next lines
+    for line in fd1:
+        # Remove line breaks
+        line = line.replace('\n', '')
+        if not line:
+            continue
+        # Split line 
+        valueList = line.split(';')
+        # Check if the line contains enough columns
+        if len(valueList) < max(indices) + 1 :
+            break
+
+         #Filter by line (with two elements to verifies)   
+        sample_type = valueList[2]
+        experimental_day = valueList[7]
+        if sample_type == "cecal" :
+            if experimental_day == "0" or experimental_day == "1" :
+                # Remove ... columns
+                filterList = [valueList[i] for i in indices]    
+                # Join the columns back
+                result = ';'.join(filterList)
+                fd4.write(result + '\n')
+
+    # End of process
+    # Close file stream
+    fd1.close()
+ #Process the original file and save the new file in local folder
+displayFile('data_huge.csv', 'output/Cecal.csv')
+
+#lists to put the desired data on the desired axis
+x = []
+y = []
+y2= []
+
+
+# fill data from file
+fd4 = open('output/Cecal.csv', 'r')
+line = fd4.readline()
+
+# Counter for the X axis
+count = 0
+while line != '':
+    line = fd4.readline()
+    # Remove line breaks
+    line = line.replace('\n','')
+    if line == '':
+        break 
+    # Split line
+    valueList = line.split(';')
+    # Take desired data for Y axis
+    bacteria = math.log10(float(valueList[3]))
+    treatment = valueList[1]
+    # Separation between ABX and Placebo
+    if 'ABX' in treatment :
+        valueList[1] = 1
+    elif 'placebo' in treatment :
+        valueList[1] = 2
+    # Put the desired data on the desired axis
+    x.append(count)
+    y.append(bacteria)
+    y2.append(valueList[1])
+    count = count + 1
+           
+
+fd4.close()
+
+grouped_data = {1: [], 2: []}  # 1 for ABX, 2 for placebo
+
+for i in range(len(y2)):
+    grouped_data[y2[i]].append(y[i])
+
+figure, axes = plt.subplots()
+
+# Add title for the graph and axes
+axes.set_title('Cecal live bacteria')
+axes.set_ylabel('log 10(live bacteria/wet g)')
+axes.set_xlabel('Treatment')
+
+grp = axes.violinplot([grouped_data[1], grouped_data[2]])
+# Remove the X axis numbering
+axes.set_xticklabels([])
+
+# Initialization of colors
+colors = ['purple', 'orange']  # Colors for ABX and placebo
+
+for i in range(2):
+    grp['bodies'][i].set_facecolor(colors[i])
+
+# Add legend with colored square
+# Purple square for ABX
+axes.scatter([], [], color='purple', label='ABX', marker='s', s=100)  
+# Orange square for Placebo
+axes.scatter([], [], color='orange', label='Placebo', marker='s', s=100)  
+# Add legend in the right bottom
+axes.legend(title="Treatment", loc='lower center')
+
+# Add horizontal lines
+axes.grid(axis='y', linestyle='--', linewidth=0.5)
+
+# Display points
+axes.scatter([1] * len(grouped_data[1]), grouped_data[1], color='purple', label='ABX', marker='o', s=15)  # Points for ABX
+axes.scatter([2] * len(grouped_data[2]), grouped_data[2], color='orange', label='Placebo', marker='o', s=15)  # Points for Placebo
+
+# Save figure in local folder
+figure.savefig('images/Cecal.png', dpi=300)
