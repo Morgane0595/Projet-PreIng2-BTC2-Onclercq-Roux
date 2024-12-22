@@ -65,7 +65,7 @@ def displayFile(filepath, outpath):
     # Close file stream
     fd1.close()
  #Process the original file and save the new file in local folder
-displayFile('data_huge.csv', 'output/Fecal.csv')
+displayFile('data_real.csv', 'output/Fecal.csv')
 
 # Plot the graph
 #Initialization of colors
@@ -171,7 +171,7 @@ def displayFile(filepath, outpath):
     # Close file stream
     fd1.close()
  #Process the original file and save the new file in local folder
-displayFile('data_huge.csv', 'output/Ileal.csv')
+displayFile('data_real.csv', 'output/Ileal.csv')
 
 #lists to put the desired data on the desired axis
 x = []
@@ -310,7 +310,7 @@ def displayFile(filepath, outpath):
     # Close file stream
     fd1.close()
  #Process the original file and save the new file in local folder
-displayFile('data_huge.csv', 'output/Cecal.csv')
+displayFile('data_real.csv', 'output/Cecal.csv')
 
 #lists to put the desired data on the desired axis
 x = []
