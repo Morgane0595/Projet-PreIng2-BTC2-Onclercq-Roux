@@ -210,11 +210,14 @@ while line != '':
 
 fd3.close()
 
+# Group the Y value based on the treatment
 grouped_data = {1: [], 2: []}  # 1 for ABX, 2 for placebo
 
+# Put "y2" value according to its "y" value
 for i in range(len(y2)):
     grouped_data[y2[i]].append(y[i])
 
+# Initialization of the plot
 figure, axes = plt.subplots()
 
 # Add a title for the graph and axes
@@ -222,15 +225,17 @@ axes.set_title('Ileal live bacteria')
 axes.set_ylabel('log 10(live bacteria/wet g)')
 axes.set_xlabel('Treatment')
 
-grp = axes.violinplot([grouped_data[1], grouped_data[2]])
+# Plot the two violin graph's bodies
+violin = axes.violinplot([grouped_data[1], grouped_data[2]])
 # Remove the X axis numbering
 axes.set_xticklabels([])
 
 # Initilization of colors
 colors = ['purple', 'orange']  
 
+# Add colors according to the treatment
 for i in range(2):
-    grp['bodies'][i].set_facecolor(colors[i])
+    violin['bodies'][i].set_facecolor(colors[i])
 
 # Add legend with colored square 
 # Purple square for ABX
@@ -344,11 +349,14 @@ while line != '':
 
 fd4.close()
 
+# Group the Y value based on the treatment 
 grouped_data = {1: [], 2: []}  # 1 for ABX, 2 for placebo
 
+# Put "y2" value according to its "y" value
 for i in range(len(y2)):
     grouped_data[y2[i]].append(y[i])
 
+# Inititalization of the plot
 figure, axes = plt.subplots()
 
 # Add title for the graph and axes
@@ -356,15 +364,17 @@ axes.set_title('Cecal live bacteria')
 axes.set_ylabel('log 10(live bacteria/wet g)')
 axes.set_xlabel('Treatment')
 
-grp = axes.violinplot([grouped_data[1], grouped_data[2]])
+# Plot the two violin graph's bodies
+violin = axes.violinplot([grouped_data[1], grouped_data[2]])
 # Remove the X axis numbering
 axes.set_xticklabels([])
 
 # Initialization of colors
 colors = ['purple', 'orange']  # Colors for ABX and placebo
 
+# Add colors accordind to the tratment
 for i in range(2):
-    grp['bodies'][i].set_facecolor(colors[i])
+    violin['bodies'][i].set_facecolor(colors[i])
 
 # Add legend with colored square
 # Purple square for ABX
