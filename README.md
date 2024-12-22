@@ -9,7 +9,7 @@ Pour utiliser ce programme python il faut d'abord vérifier que votre fichier so
 Il faut aussi vérifier la présence des dossiers locaux dans votre ordinateur nommés "images", "input" et "output".  
 Ensuite, il faut renseigner le nom du fichier à traiter, ligne 6 dans la variable "fichier_source", ainsi que dans les fonctions display (premier dossier),lignes 68, 174, 313.
 Pour copier le fichier source dans le dossier "input", penser à écrire le nom du fichier à la ligne 9, dans la variable "dossier_destination".
-Eventuellement changer le nom des dossiers filtrés qui seront générés après le filtrage afin de ne pas les mélanger dans votre ordinateur si vous utilisez le programme pour différents fichiers sources, dans les fonctions display (deuxième dossier), lignes 68, 174 et 313.   
+Et, eventuellement, changer le nom des dossiers filtrés qui seront générés après le filtrage afin de ne pas les mélanger dans votre ordinateur si vous utilisez le programme pour différents fichiers sources, dans les fonctions display (deuxième dossier), lignes 68, 174 et 313.   
 Enfin il suffit de lancer le code et les graphiques et dossiers filtrés générés seront directemnt copiés dans les dossiers "images", "output" et "input".
 
 Limites de notre programme :
